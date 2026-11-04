@@ -6,7 +6,8 @@ export function HomePage() {
   return (
     <section className="card wide">
       <h1>화면 목록</h1>
-      <h1>메인에서는 이렇게 수정했다. 브랜치와의 충돌이 발생할거다.</h1>
+      <h2>등록된 화면을 선택하여 이동합니다.</h2>
+      <h3>이런 내용도 추가헀습니다.</h3>
       <table>
         <thead>
           <tr>

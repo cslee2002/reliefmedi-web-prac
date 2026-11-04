@@ -1,0 +1,38 @@
+<!doctype html>
+<!--
+  기획 시안 예시 파일
+  - 기획자가 직접 수정하는 HTML 시안입니다. React 코드와 연결되어 있지 않습니다.
+  - 파일명은 화면 ID(WEB-03-01)로 시작해야 스냅샷 목록에서 구현 화면과 나란히 연결됩니다.
+  - 수정은 design/... 브랜치에서 하고 PR로 올립니다.
+-->
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>[시안] WEB-03-01 의사 회원가입</title>
+    <style>
+      body { font-family: Pretendard, 'Apple SD Gothic Neo', sans-serif; background: #f6f7f9; margin: 0; padding: 24px 16px; color: #1d2330; }
+      .card { max-width: 480px; margin: 0 auto; background: #fff; border: 1px solid #e4e7ec; border-radius: 12px; padding: 24px; }
+      .steps { display: flex; gap: 8px; margin-bottom: 16px; font-size: 13px; }
+      .steps span { flex: 1; padding: 6px; text-align: center; border-radius: 6px; background: #f2f4f7; color: #667085; }
+      .steps .on { background: #2563eb; color: #fff; }
+      label { display: block; margin-bottom: 14px; font-size: 14px; }
+      input, select { display: block; width: 100%; margin-top: 6px; padding: 10px 12px; border: 1px solid #e4e7ec; border-radius: 8px; box-sizing: border-box; }
+      button { width: 100%; padding: 12px; border: 0; border-radius: 8px; background: #2563eb; color: #fff; font-size: 15px; }
+      .note { color: #667085; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>의사 회원가입</h1>
+      <!-- 시안: 단계 표시를 추가하고 싶다는 가정의 예시 -->
+      <div class="steps"><span class="on">1 본인인증</span><span>2 면허·소속</span><span>3 서류</span><span>4 계정</span></div>
+      <label>이메일(아이디)<input type="email" placeholder="doctor@example.com" /></label>
+      <label>비밀번호<input type="password" /></label>
+      <label>면허번호<input inputmode="numeric" /></label>
+      <label>소속 병원<select><option>병원명을 검색해 선택</option></select></label>
+      <p class="note">제출한 서류는 심사 완료 후 7일 내 삭제됩니다.</p>
+      <button>다음</button>
+    </div>
+  </body>
+</html>

@@ -75,6 +75,3 @@ design/ 시안 HTML  ──(충성이 보고 반영)──▶  src/ React 코드
 4. `src/app/router.tsx` 의 `components` 에 연결
 5. 필요한 가짜 API는 `src/mocks/handlers.ts` 에 추가
 
-## 주의
-- 목업 데이터의 이름·면허번호는 가짜입니다.
-- 면허번호 자릿수(6자리) 등 일부 검증 기준은 가정값입니다. 코드 주석에 표시했습니다.

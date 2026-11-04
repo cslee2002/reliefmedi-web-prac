@@ -1,0 +1,58 @@
+# CD: main 에 push(= PR 병합)되면 목업 모드로 GitHub Pages 에 배포
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:                           # Actions 탭에서 수동 실행도 가능
+
+# 배포는 한 번에 하나만. 진행 중인 배포는 취소하지 않고 끝까지 진행
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write                                 # Pages 배포 권한
+  id-token: write                              # Pages 배포 인증용
+
+env:
+  BASE_PATH: /${{ github.event.repository.name }}/   # Pages 주소: https://<계정>.github.io/<저장소>/
+
+jobs:
+  build:
+    name: 테스트·목업 빌드·스냅샷
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run test:run
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build:mock
+        env:
+          VITE_USE_MOCK: 'true'
+      - run: npm run snapshot
+      - name: Pages 올릴 파일 정리
+        run: |
+          # 새로고침·직접 접속 시 404 대신 앱이 뜨도록 (SPA 라우팅)
+          cp dist-mock/index.html dist-mock/404.html
+          # 스냅샷은 /screens/ 아래로
+          mv snapshots dist-mock/screens
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist-mock
+
+  deploy:
+    name: Pages 배포
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

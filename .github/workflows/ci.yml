@@ -1,0 +1,52 @@
+# CI: main 으로 향하는 PR 이 열리거나 새 커밋이 push 될 때마다 자동 검사
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+# 같은 PR 에 새 커밋이 오면 이전 실행은 취소
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: 린트·타입체크·테스트·빌드
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5              # 코드 받기
+      - uses: actions/setup-node@v5            # Node 설치 (.nvmrc 버전, npm 캐시)
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci                            # package-lock 그대로 설치
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run coverage                  # 테스트 + 커버리지
+      - run: npm run build
+
+  snapshots:
+    name: 화면 스냅샷
+    needs: verify                              # verify 가 성공해야 실행
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium   # 헤드리스 브라우저 설치
+      - run: npm run build:mock
+        env:
+          VITE_USE_MOCK: 'true'                # 목업(MSW) 켜기
+      - run: npm run snapshot
+      - uses: actions/upload-artifact@v4       # 실행 화면 아래 Artifacts 에 zip 으로 첨부
+        with:
+          name: screen-snapshots
+          path: snapshots/
+          retention-days: 14
